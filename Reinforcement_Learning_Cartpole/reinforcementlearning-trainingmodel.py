@@ -3,6 +3,8 @@ import gymnasium as gym  # open ai gym
 from stable_baselines3 import PPO  # Proximal Policy Optimization
 from stable_baselines3.common.vec_env import DummyVecEnv  # Vectorized Environment
 from stable_baselines3.common.evaluation import evaluate_policy  # Evaluating the model
+# adding dependencies for callback
+from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnRewardThreshold
 
 """
 # Observation Space Cartpole
@@ -41,6 +43,10 @@ from stable_baselines3.common.evaluation import evaluate_policy  # Evaluating th
 # Create the environment
 env = gym.make("CartPole-v1", render_mode="human")
 
+stop_callback = StopTrainingOnRewardThreshold(reward_threshold=200, verbose=1)
+eval_callback = EvalCallback(env, callback_on_new_best=stop_callback,
+                             eval_freq=10000, best_model_save_path='Reinforcement_Learning_Cartpole/Training/Saved_Models', verbose=1)
+
 # Train RL model
 # define log path
 log_path = os.path.join('Reinforcement_Learning_Cartpole/Training/Logs')
@@ -60,6 +66,7 @@ PPO_path = os.path.join(
     'Reinforcement_Learning_Cartpole/Training/Saved_Models', 'PPO_CartPole')
 model.save(PPO_path)
 
+# testing the model in an environment
 
 # episodes = 5
 # for episode in range(1, episodes+1):  # loop 1 to 5
