@@ -58,7 +58,7 @@ model = PPO("MlpPolicy", env, verbose=1,
             # PPO, A2C etc. are faster on CPU unless using CNNs, but my cpu is slow compared to gpu, so hehe
             tensorboard_log=log_path, device='cuda')
 # timesteps are dependent on the environment
-model.learn(total_timesteps=20000)
+model.learn(total_timesteps=20000, callback=eval_callback)
 
 # Save and Reload Model
 
