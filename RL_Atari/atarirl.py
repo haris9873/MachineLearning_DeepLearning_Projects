@@ -35,7 +35,7 @@ while not done:
     score += rewards
     vec_env.render("human")
 print('Score: {}'.format(score))
-env.close()
+vec_env.close()
 
 
 # run tensorboard in terminal
