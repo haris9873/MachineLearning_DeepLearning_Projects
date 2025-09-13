@@ -3,7 +3,7 @@ from ultralytics import YOLO
 import os
 import shutil
 import glob
-
+import shap
 
 PROJECT_NAME = "Tumor_Detection_YOLOV11"
 DATA_PATH = f"{PROJECT_NAME}/dataset_tumor/data.yaml"
@@ -95,3 +95,4 @@ if __name__ == "__main__":
         print("Skipping prediction due to missing test image path.")
 
     print("Finished Testing, Results Saved")
+
