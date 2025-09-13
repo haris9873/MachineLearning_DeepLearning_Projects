@@ -3,7 +3,7 @@ from ultralytics import YOLO
 import os
 import shutil
 import glob
-import shap
+
 
 PROJECT_NAME = "Tumor_Detection_YOLOV11"
 DATA_PATH = f"{PROJECT_NAME}/dataset_tumor/data.yaml"
