@@ -273,11 +273,11 @@ for epoch in range(1, n_epochs+1):
             running_val_loss += val_loss.item()
 
             _, predicted = torch.max(output.data, 1)
-            total_val += target.size(0)
+            total_valid += target.size(0)
             correct_val += (predicted == target).sum().item()
 
     val_loss = running_val_loss / len(test_loader)
-    val_acc = 100 * correct_val / total_val
+    val_acc = 100 * correct_val / total_valid
     history['val_loss'].append(val_loss)
     history['val_acc'].append(val_acc)
     print('\nValidation done .... \n')
