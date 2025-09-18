@@ -221,7 +221,7 @@ for epoch in range(1, n_epochs+1):
 
     # keep track of training and validation loss
     train_loss = 0.0
-    valid_loss = 0.0
+    val_loss = 0.0
     running_loss = 0.0
     correct_train = 0
     total_train = 0
@@ -243,14 +243,15 @@ for epoch in range(1, n_epochs+1):
         # backward pass: compute gradient of the loss with respect to model parameters
         loss.backward()
         optimizer.step()  # perform a single optimization step (parameter update)
+
         running_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
         total_train += target.size(0)
         correct_train += (predicted == target).sum().item()
 
-    avg_train_loss = running_loss / len(train_loader)
+    train_loss = running_loss / len(train_loader)
     train_acc = 100 * correct_train / total_train
-    history['train_loss'].append(avg_train_loss)
+    history['train_loss'].append(train_loss)
     history['train_acc'].append(train_acc)
 
     ######################
@@ -259,6 +260,7 @@ for epoch in range(1, n_epochs+1):
     model.eval()  # prep model for evaluation
     correct_valid = 0
     total_valid = 0
+    running_val_loss = 0
     with torch.no_grad():
         for data, target in valid_loader:
             # move tensors to GPU if CUDA is available
@@ -266,41 +268,35 @@ for epoch in range(1, n_epochs+1):
                 data, target = data.cuda(), target.cuda()
                 # forward pass: compute predicted outputs by passing inputs to the model
             output = model(data)
-            # Get the predicted class with the highest score
+
+            val_loss = criterion(output, target)
+            running_val_loss += val_loss.item()
+
             _, predicted = torch.max(output.data, 1)
-            # Count the total number of samples
-            total_valid += target.size(0)
-            # Count the number of correct predictions
-            correct_valid += (predicted == target).sum().item()
+            total_val += target.size(0)
+            correct_val += (predicted == target).sum().item()
 
-            loss = criterion(output, target)   # calculate the batch loss
-            valid_loss += loss.item()*data.size(0)  # update average validation loss
-
-    # calculate average losses
-    train_loss = train_loss/len(train_loader.sampler)
-    valid_loss = valid_loss/len(valid_loader.sampler)
-    # Calculate and print the accuracy
-    valid_accuracy = 100 * correct_valid / total_valid
+    val_loss = running_val_loss / len(test_loader)
+    val_acc = 100 * correct_val / total_val
+    history['val_loss'].append(val_loss)
+    history['val_acc'].append(val_acc)
     print('\nValidation done .... \n')
     # print training/validation statistics
     print('Epoch: {} \tTraining Loss: {:.6f} \tTraining Accuracy: {:.6f} \tValidation Loss: {:.6f} \tValidation Accuracy: {:.2f}%'.format(
-        epoch, train_acc, train_loss, valid_loss, valid_accuracy))
-
-    history['val_loss'].append(valid_loss)
+        epoch, train_acc, train_loss, val_loss, val_acc))
     history['epoch'].append(epoch)
-    history['val_acc'].append(valid_accuracy)
     # save model if validation loss has decreased
-    if valid_loss <= valid_loss_min:
+    if val_loss <= valid_loss_min:
         print('Validation loss decreased ({:.6f} --> {:.6f}).  Saving model ...'.format(
             valid_loss_min,
-            valid_loss))
+            val_loss))
         torch.save(model.state_dict(),
                    'Emotion_Classification/model_cnn_emotionclassifier.pt')
-        valid_loss_min = valid_loss
+        valid_loss_min = val_loss
 
     # Update the learning rate based on validation loss
 
-    scheduler.step(valid_loss)
+    scheduler.step(val_loss)
 
 time_elapsed = time() - time_start
 
@@ -309,6 +305,6 @@ print('Training complete in {:.0f}m {:.0f}s'.format(
 
 plot_history(history, n_epochs)
 
-# Save the model checkpoint
-torch.save(model.state_dict(),
-           'Emotion_Classification/model_cnn_emotionclassifier.pt')
+# # Save the model checkpoint
+# torch.save(model.state_dict(),
+#            'Emotion_Classification/model_cnn_emotionclassifier.pt')
