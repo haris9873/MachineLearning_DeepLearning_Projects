@@ -12,7 +12,8 @@ print(f"Using device: {device}")
 
 
 gym.register_envs(gymnasium_robotics)
-env_id = 'FetchPickAndPlace-v4'
+# change as per env, fetch reach is the easiest to solve in low epochs
+env_id = 'FetchReach-v4'
 # env = gym.make(env_id, render_mode="human")
 env = make_vec_env(env_id, n_envs=1, seed=42)
 
@@ -50,7 +51,7 @@ print('Training Complete')
 # Save model
 
 SAC_path = os.path.join(
-    save_path, 'SAC_FetchPickAndPlace')
+    save_path, 'SAC_{}'.format(env_id))
 model.save(SAC_path)
 
 print("Training finished and final model saved to ", SAC_path)
