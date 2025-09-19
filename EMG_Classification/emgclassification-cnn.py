@@ -11,7 +11,14 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 import torch
 import torch.nn.functional as F
 
+"""
+-------------------------------------------------------------------
+Raw Data available at:
 
+https://data.mendeley.com/datasets/d4y7fm3g79/1
+-------------------------------------------------------------------
+
+"""
 df = pd.read_csv(
     'EMG_Classification/cleaned_emg_dataset.csv')
 
