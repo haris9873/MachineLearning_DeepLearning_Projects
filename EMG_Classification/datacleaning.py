@@ -77,7 +77,7 @@ pd.set_option('display.max_columns', None, 'display.width',
 -----------------------------------------------------------
 """
 df = pd.DataFrame(dataset, columns=['slno', 'emg1', 'emg2', 'emg3', 'emg4',
-                  'emg5', 'emg6', 'emg7', 'emg8', 'User_ID', 'Activity', 'Set_Number'])
+                  'emg5', 'emg6', 'emg7', 'emg8', 'Time', 'User_ID', 'Activity', 'Set_Number'])
 
 
 def describe(df):
@@ -122,7 +122,8 @@ print(describe(df))
 
 # Remove slno, User_ID and Set_Number columns as they are not required
 dataset_cleaned = df.copy()
-dataset_cleaned.drop(['slno', 'User_ID', 'Set_Number'], axis=1, inplace=True)
+dataset_cleaned.drop(
+    ['slno', 'Time',  'Set_Number'], axis=1, inplace=True)
 print(dataset_cleaned.head())
 # checking for any data  mismatch
 print(dataset_cleaned['Activity'].unique())
@@ -150,7 +151,6 @@ dataset_cleaned.replace('Middle Finger Extension', 3, inplace=True)
 dataset_cleaned.replace('Rest', 4, inplace=True)
 
 # sorting the dataset by Activity
-dataset_cleaned = dataset_cleaned.sort_values(by=['Activity'])
 print(dataset_cleaned.head())
 print(describe(dataset_cleaned))
 
