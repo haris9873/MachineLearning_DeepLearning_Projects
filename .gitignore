@@ -11,3 +11,6 @@ yolo8n.pt
 EMG_Classification/EMG_Dataset
 EMG_Classification/combined_emg_dataset.csv
 EMG_Classification/cleaned_emg_dataset.csv
+Breast_Cancer_MRI/mridataset
+Breast_Cancer_MRI/model_cnn_breastcancermri.pt
+
