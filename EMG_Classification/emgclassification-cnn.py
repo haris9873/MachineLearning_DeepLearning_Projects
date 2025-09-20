@@ -202,9 +202,6 @@ else:
     print('No GPU available, training on CPU.')
 
 
-# Assuming you have already defined model, criterion, optimizer,
-# train_loader, valid_loader, and have a `train_on_gpu` flag.
-
 # 2. Set up the training loop
 history = {'epoch': [], 'train_loss': [],
            'val_loss': [], 'train_acc': [], 'val_acc': []}
