@@ -288,7 +288,7 @@ for epoch in range(1, n_epochs+1):
             valid_loss_min,
             val_loss))
         torch.save(model.state_dict(),
-                   'Emotion_Classification/model_cnn_emotionclassifier.pt')
+                   'EMG_Classification/model_cnn_emgclassifier.pt')
         valid_loss_min = val_loss
     # Update the learning rate based on validation loss
     scheduler.step(val_loss)
