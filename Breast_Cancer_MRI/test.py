@@ -1,5 +1,6 @@
 import torch
-from torch import nn, optim
+from torch import nn
+import pandas as pd
 import torch.nn.functional as F
 from torchvision import transforms
 import matplotlib.pyplot as plt
@@ -7,7 +8,7 @@ import os
 import numpy as np
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix
 import random
 
 
@@ -42,6 +43,12 @@ batch_size = 32
 
 test_loader = DataLoader(
     test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+
+"""
+##############################################
+    Define the CNN Architecture
+##############################################
+"""
 
 
 class GaussianNoise(nn.Module):
@@ -86,30 +93,30 @@ class MRI_CNN(nn.Module):
             nn.Dropout2d(0.2),
             nn.MaxPool2d(2, 2),  # Downsample: 135x62 -> 67x31
 
-            # nn.Conv2d(128, 256, kernel_size=3, padding=1),
-            # nn.BatchNorm2d(256),
-            # nn.ReLU(),
-            # nn.Dropout2d(0.35),
-            # nn.MaxPool2d(2, 2)   # Downsample: 67x31 -> 33x15
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.Dropout2d(0.35),
+            nn.MaxPool2d(2, 2)   # Downsample: 67x31 -> 33x15
         )
-        flattened_size = 128 * (67 * 31)
+        flattened_size = 256 * (33 * 15)
 
         self.fc_layers = nn.Sequential(
 
             GaussianNoise(0.25),
-            nn.Linear(flattened_size, 128),
-            nn.BatchNorm1d(128),
+            nn.Linear(flattened_size, 256),
+            nn.BatchNorm1d(256),
             nn.ReLU(),
             nn.Dropout(0.25),  # dropout to prevent overfitting
 
             # 2nd hidden layer
-            nn.Linear(128, 64),
-            nn.BatchNorm1d(64),
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
             nn.ReLU(),
             nn.Dropout(0.25),
             # output layer
 
-            nn.Linear(64, 2)  # 128 (hidden layer) → 2 (output classes)
+            nn.Linear(128, 2)  # 128 (hidden layer) → 2 (output classes)
         )
 
     def forward(self, x):
@@ -153,9 +160,10 @@ def test_model():
             preds = outputs.argmax(dim=1)
             all_preds.extend(preds.cpu().numpy().tolist())
             all_true.extend(target.cpu().numpy().tolist())
-        test_acc = (np.array(all_preds) == np.array(all_true)).mean()
+
         print('Test Accuracy of the model on the test images: {} %'.format(
             100 * correct / total))
+
     return
 
 
@@ -165,7 +173,12 @@ test_model()
 # Classification Report
 print("\nClassification report:\n")
 print(classification_report(all_true, all_preds, target_names=class_names))
-
+report = classification_report(
+    all_true, all_preds, target_names=class_names, output_dict=True
+)
+# Convert the report dictionary to a pandas DataFrame
+df_report = pd.DataFrame(report).transpose()
+df_report.to_csv('Breast_Cancer_MRI/Results/Classification_Report.csv')
 
 # Confusion Matrix
 cm = confusion_matrix(all_true, all_preds)
@@ -212,7 +225,7 @@ def show_random_test_predictions(model, dataset, n=8):
     plt.figure(figsize=(3*cols, 3*rows))
     for i in range(n):
         plt.subplot(rows, cols, i+1)
-        img = imgs[i].squeeze(0).cpu().numpy()       # (48,48)
+        img = imgs[i].squeeze(0).cpu().numpy()
         plt.imshow(img, cmap="gray")
         true_label = class_names[labels[i]]
         pred_label = class_names[preds[i].item()]

@@ -19,7 +19,7 @@ Datset publicly available through Kaggle at: https://www.kaggle.com/datasets/uza
 
 
 data_path = 'Breast_Cancer_MRI/mridataset'
-
+os.makedirs('Breast_Cancer_MRI/Results', exist_ok=True)
 datasets = os.listdir(data_path)
 
 # List class folders in each split
@@ -155,30 +155,30 @@ class MRI_CNN(nn.Module):
             nn.Dropout2d(0.2),
             nn.MaxPool2d(2, 2),  # Downsample: 135x62 -> 67x31
 
-            # nn.Conv2d(128, 256, kernel_size=3, padding=1),
-            # nn.BatchNorm2d(256),
-            # nn.ReLU(),
-            # nn.Dropout2d(0.35),
-            # nn.MaxPool2d(2, 2)   # Downsample: 67x31 -> 33x15
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.Dropout2d(0.35),
+            nn.MaxPool2d(2, 2)   # Downsample: 67x31 -> 33x15
         )
-        flattened_size = 128 * (67 * 31)
+        flattened_size = 256 * (33 * 15)
 
         self.fc_layers = nn.Sequential(
 
             GaussianNoise(0.25),
-            nn.Linear(flattened_size, 128),
-            nn.BatchNorm1d(128),
+            nn.Linear(flattened_size, 256),
+            nn.BatchNorm1d(256),
             nn.ReLU(),
             nn.Dropout(0.25),  # dropout to prevent overfitting
 
             # 2nd hidden layer
-            nn.Linear(128, 64),
-            nn.BatchNorm1d(64),
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
             nn.ReLU(),
             nn.Dropout(0.25),
             # output layer
 
-            nn.Linear(64, 2)  # 128 (hidden layer) → 2 (output classes)
+            nn.Linear(128, 2)  # 128 (hidden layer) → 2 (output classes)
         )
 
     def forward(self, x):
