@@ -11,13 +11,11 @@ cap = cv2.VideoCapture(0)  # For webcam
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(f"Using device: {device}")
 
-# Variables for gesture stability
-# We'll track the gesture for a few frames to prevent flickering.
 pressed_key = None
 last_action = None
 gesture_frame_count = 0
 min_frames_to_hold = 3  # Number of consecutive frames to confirm a gesture
-default_angle = 170  # change as per your default angle
+default_angle = 170
 tilt_threshold = 20  # variable for tilt threshold
 head_movement_threshold = 4  # variable for head movement threshold
 # variable to store the neutral y position of the head
