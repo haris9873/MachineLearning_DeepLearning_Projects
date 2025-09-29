@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import os
+import joblib
 
 
 def load_data(file_path):
@@ -373,3 +374,5 @@ if __name__ == "__main__":
                     bbox_inches='tight', dpi=300)
 
         print("Plots saved in the Results directory.")
+    filename = os.path.join(data_dir, 'Parkinson_Best_model.joblib')
+    joblib.dump(bestmodel, filename)
