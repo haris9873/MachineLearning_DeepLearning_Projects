@@ -374,5 +374,5 @@ if __name__ == "__main__":
                     bbox_inches='tight', dpi=300)
 
         print("Plots saved in the Results directory.")
-    filename = os.path.join(data_dir, 'Parkinson_Best_model.joblib')
+    filename = os.path.join(save_path, 'Parkinson_Best_model.joblib')
     joblib.dump(bestmodel, filename)
